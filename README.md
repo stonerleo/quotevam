@@ -1,50 +1,64 @@
-# Welcome to your Expo app 👋
+# QuoteVam 🌟
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+QuoteVam is a beautiful, feature-rich daily quote application built with React Native and Expo. It provides users with endless inspiration through a curated collection of quotes, customizable backgrounds, and multi-language support.
 
-## Get started
+## ✨ Features
 
-1. Install dependencies
+- **Daily Inspiration**: Swipe or tap to discover new quotes and wisdom from famous authors and personalities.
+- **Multi-Language Support**: Enjoy quotes in multiple languages! Supported languages include:
+  - English
+  - Spanish (Español)
+  - French (Français)
+  - Hindi (हिंदी)
+  - Marathi (मराठी)
+  - Malayalam (മലയാളം)
+- **Customizable Themes**: Change the visual aesthetic by selecting different background templates.
+- **Favorites System**: Save your most loved quotes to a dedicated offline Favorites tab for easy access later.
+- **Offline Capable**: Quotes and favorites are stored locally, meaning the app works perfectly without an active internet connection!
+- **Share & Copy**: Easily copy quotes to your clipboard to share with friends or on social media.
 
+## 🚀 Getting Started
+
+To run QuoteVam locally on your machine, follow these steps:
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) installed
+- [Expo CLI](https://docs.expo.dev/get-started/installation/) (`npm install -g expo-cli`)
+- Expo Go app on your physical device OR an iOS Simulator / Android Emulator.
+
+### Installation
+
+1. Clone the repository and navigate to the project directory:
+   ```bash
+   git clone <repository-url>
+   cd Quotevam
+   ```
+
+2. Install dependencies:
    ```bash
    npm install
    ```
 
-2. Start the app
-
+3. Start the development server:
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+4. Open the app:
+   - Scan the QR code shown in the terminal with the **Expo Go** app on your phone.
+   - Or press `i` to open in iOS Simulator / `a` to open in Android Emulator.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🛠 Tech Stack
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- **Framework**: [React Native](https://reactnative.dev/) / [Expo](https://expo.dev/)
+- **Routing**: [Expo Router](https://docs.expo.dev/router/introduction/)
+- **Storage**: `@react-native-async-storage/async-storage` for persisting favorites locally
+- **Icons**: `@expo/vector-icons`
 
-## Get a fresh project
+## 📁 Repository Structure
 
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- `app/`: Contains the Expo Router screen layouts and tab navigation (`(tabs)/index.tsx`, `(tabs)/favorites.tsx`).
+- `assets/`: Contains local font files, background template images, and the multi-language `quotes_*.json` databases.
+- `components/`: Reusable UI components used across screens.
+- `scripts/`: Python scripts used for generating and translating the quote databases (e.g. `regenerate_quotes.py`).
