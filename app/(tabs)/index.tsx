@@ -164,8 +164,8 @@ export default function HomeScreen() {
 
       <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9 }} style={styles.viewShotContainer}>
         {bgImage ? (
-          <ImageBackground source={bgImage} style={[styles.quoteBgImage, { justifyContent: quotePosition }]} imageStyle={styles.quoteBgImageInner}>
-            <View style={[styles.quoteContainer, styles.quoteContainerTransparent]}>
+          <ImageBackground source={bgImage} style={styles.quoteBgImage} imageStyle={styles.quoteBgImageInner}>
+            <View style={[styles.quoteContainer, styles.quoteContainerTransparent, { justifyContent: quotePosition }]}>
               <FontAwesome name="quote-left" size={30} color="#fff" style={styles.quoteIconLight} />
               <ThemedText style={[styles.quoteText, { color: '#fff' }]}>{quote.text}</ThemedText>
               {showAuthor && <ThemedText style={[styles.authorText, { color: '#fff' }]}>- {quote.author}</ThemedText>}
@@ -207,16 +207,20 @@ export default function HomeScreen() {
       <View style={styles.backgroundSelectorWrapper}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.backgroundSelector}>
           <TouchableOpacity
-            style={[styles.bgOption, bgImage === null && styles.bgOptionSelected]}
+            style={styles.bgOption}
             onPress={() => setBgImage(null)}
           >
-            <View style={[styles.bgOptionColor, { backgroundColor: '#ccc' }]} />
+            <View style={[styles.bgImageWrapper, bgImage === null && styles.bgImageWrapperSelected]}>
+              <View style={[styles.bgOptionColor, { backgroundColor: '#ccc' }]} />
+            </View>
             <ThemedText style={styles.bgOptionText}>None</ThemedText>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.bgOption} onPress={pickImage}>
-            <View style={[styles.bgOptionColor, styles.bgOptionUpload]}>
-              <FontAwesome name="upload" size={20} color="#fff" />
+            <View style={styles.bgImageWrapper}>
+              <View style={[styles.bgOptionColor, styles.bgOptionUpload]}>
+                <FontAwesome name="upload" size={20} color="#fff" />
+              </View>
             </View>
             <ThemedText style={styles.bgOptionText}>Upload</ThemedText>
           </TouchableOpacity>
@@ -224,10 +228,12 @@ export default function HomeScreen() {
           {TEMPLATE_IMAGES.map((img, index) => (
             <TouchableOpacity
               key={index}
-              style={[styles.bgOption, bgImage === img && styles.bgOptionSelected]}
+              style={styles.bgOption}
               onPress={() => setBgImage(img)}
             >
-              <Image source={img} style={styles.bgOptionImage} />
+              <View style={[styles.bgImageWrapper, bgImage === img && styles.bgImageWrapperSelected]}>
+                <Image source={img} style={styles.bgOptionImage} />
+              </View>
               <ThemedText style={styles.bgOptionText}>Temp {index + 1}</ThemedText>
             </TouchableOpacity>
           ))}
@@ -284,6 +290,7 @@ const styles = StyleSheet.create({
   },
   quoteBgImage: {
     width: '100%',
+    aspectRatio: 4 / 5,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -312,7 +319,8 @@ const styles = StyleSheet.create({
   },
   quoteContainerTransparent: {
     backgroundColor: 'rgba(0, 0, 0, 0.4)', // Dark overlay for text readability
-    marginVertical: 20,
+    height: '100%',
+    justifyContent: 'center',
   },
   quoteIcon: {
     alignSelf: 'flex-start',
@@ -356,23 +364,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#3b82f6',
   },
   backgroundSelectorWrapper: {
-    height: 80,
-    marginBottom: 20,
+    height: 100,
+    marginBottom: 10,
+    justifyContent: 'center',
   },
   backgroundSelector: {
     alignItems: 'center',
     gap: 15,
     paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   bgOption: {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  bgOptionSelected: {
-    borderWidth: 2,
-    borderColor: '#3b82f6',
-    borderRadius: 8,
+  bgImageWrapper: {
     padding: 2,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bgImageWrapperSelected: {
+    borderColor: '#3b82f6',
   },
   bgOptionImage: {
     width: 50,

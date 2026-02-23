@@ -38,8 +38,8 @@ function CustomDrawerContent(props: any) {
 
   return (
     <DrawerContentScrollView {...props}>
-      <View style={{ padding: 20 }}>
-        <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 20, color: Colors[theme].text }}>
+      <View style={{ paddingTop: 20, paddingHorizontal: 20, paddingBottom: 0 }}>
+        <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 20, marginLeft: 16, color: Colors[theme].text }}>
           Language
         </Text>
 
@@ -115,13 +115,6 @@ export default function DrawerLayout() {
         options={{
           drawerLabel: 'Favorites',
           title: 'My Favorites',
-        }}
-      />
-      <Drawer.Screen
-        name="explore"
-        options={{
-          drawerLabel: 'Explore',
-          title: 'Explore',
         }}
       />
     </Drawer>
