@@ -7,6 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
 import { useRef, useState } from 'react';
 import { Image, ImageBackground, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ViewShot from 'react-native-view-shot';
 
 const TEMPLATE_IMAGES = [
@@ -18,6 +19,7 @@ const TEMPLATE_IMAGES = [
 type QuotePosition = 'flex-start' | 'center' | 'flex-end';
 
 export default function FavoritesScreen() {
+    const insets = useSafeAreaInsets();
     const { favorites, isFavorite, addFavorite, removeFavorite } = useFavorites();
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -119,7 +121,7 @@ export default function FavoritesScreen() {
 
     if (favorites.length === 0) {
         return (
-            <ThemedView style={styles.container}>
+            <ThemedView style={[styles.container, { paddingBottom: Math.max(insets.bottom + 24, 24) }]}>
                 <View style={styles.emptyContainer}>
                     <FontAwesome name="heart-o" size={60} color="#888" style={{ marginBottom: 20 }} />
                     <ThemedText style={{ fontSize: 20, textAlign: 'center', opacity: 0.8 }}>No favorites yet!</ThemedText>
@@ -130,7 +132,7 @@ export default function FavoritesScreen() {
     }
 
     return (
-        <ThemedView style={styles.container}>
+        <ThemedView style={[styles.container, { paddingBottom: Math.max(insets.bottom + 24, 24) }]}>
 
             <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9 }} style={styles.viewShotContainer}>
                 {bgImage ? (

@@ -14,6 +14,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Image, ImageBackground, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ViewShot from 'react-native-view-shot';
 
 const quotesMap: Record<string, any[]> = {
@@ -34,6 +35,7 @@ const TEMPLATE_IMAGES = [
 type QuotePosition = 'flex-start' | 'center' | 'flex-end';
 
 export default function HomeScreen() {
+  const insets = useSafeAreaInsets();
   const { language } = useLanguage();
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const [quotesData, setQuotesData] = useState(quotesMap['en']);
@@ -160,7 +162,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container, { paddingBottom: Math.max(insets.bottom + 24, 24) }]}>
 
       <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9 }} style={styles.viewShotContainer}>
         {bgImage ? (
