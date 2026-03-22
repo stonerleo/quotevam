@@ -117,6 +117,20 @@ export default function DrawerLayout() {
           title: 'My Favorites',
         }}
       />
+      <Drawer.Screen
+        name="create"
+        options={{
+          drawerLabel: 'Create Quote',
+          title: 'Create Your Own Quote',
+        }}
+      />
+      <Drawer.Screen
+        name="myquotes"
+        options={{
+          drawerLabel: 'My Quotes',
+          title: 'My Custom Quotes',
+        }}
+      />
     </Drawer>
   );
 }
