@@ -2,12 +2,11 @@
   "expo": {
     "name": "QuoteVam",
     "slug": "quotevam",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "quotevam",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.sillyapps.quotevam"
@@ -20,7 +19,6 @@
         "foregroundImage": "./assets/images/icon.png",
         "backgroundImage": "./assets/images/icon.png"
       },
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
@@ -29,6 +27,13 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-3489593844596905~4315611226",
+          "iosAppId": "ca-app-pub-3489593844596905~4315611226"
+        }
+      ],
       [
         "expo-splash-screen",
         {
