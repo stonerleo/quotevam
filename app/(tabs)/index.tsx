@@ -12,6 +12,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import * as ImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
+import { useAdManager } from '@/context/AdContext';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Image, ImageBackground, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -38,6 +39,7 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { language } = useLanguage();
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
+  const { registerInteraction } = useAdManager();
   const [quotesData, setQuotesData] = useState(quotesMap['en']);
 
   // Keep track of quote history and current index
@@ -161,28 +163,41 @@ export default function HomeScreen() {
     }
   };
 
-  return (
-    <ThemedView style={[styles.container, { paddingBottom: Math.max(insets.bottom + 24, 24) }]}>
+  const handleNext = () => getRandomQuote();
 
-      <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9 }} style={styles.viewShotContainer}>
-        {bgImage ? (
-          <ImageBackground source={bgImage} style={styles.quoteBgImage} imageStyle={styles.quoteBgImageInner}>
-            <View style={[styles.quoteContainer, styles.quoteContainerTransparent, { justifyContent: quotePosition }]}>
-              <FontAwesome name="quote-left" size={30} color="#fff" style={styles.quoteIconLight} />
-              <ThemedText style={[styles.quoteText, { color: '#fff' }]}>{quote.text}</ThemedText>
-              {showAuthor && <ThemedText style={[styles.authorText, { color: '#fff' }]}>- {quote.author}</ThemedText>}
+  return (
+    <ThemedView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={[styles.container, { paddingBottom: Math.max(insets.bottom + 24, 24) }]} bounces={false} showsVerticalScrollIndicator={false}>
+
+        <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9 }} style={styles.viewShotContainer}>
+          {bgImage ? (
+            <ImageBackground source={bgImage} style={styles.quoteBgImage} imageStyle={styles.quoteBgImageInner}>
+              <View style={[styles.quoteContainer, styles.quoteContainerTransparent, { justifyContent: quotePosition }]}>
+                <FontAwesome name="quote-left" size={30} color="#fff" style={styles.quoteIconLight} />
+                <ThemedText style={[styles.quoteText, { color: '#fff' }]}>{quote.text}</ThemedText>
+                {showAuthor && <ThemedText style={[styles.authorText, { color: '#fff' }]}>- {quote.author}</ThemedText>}
+              </View>
+            </ImageBackground>
+          ) : (
+            <View style={[styles.quoteContainer, styles.quoteContainerPlain, { justifyContent: quotePosition }]}>
+              <View style={styles.quoteContentWrapper}>
+                <FontAwesome name="quote-left" size={30} color="#666" style={styles.quoteIcon} />
+                <ThemedText style={styles.quoteText}>{quote.text}</ThemedText>
+                {showAuthor && <ThemedText style={styles.authorText}>- {quote.author}</ThemedText>}
+              </View>
             </View>
-          </ImageBackground>
-        ) : (
-          <View style={[styles.quoteContainer, styles.quoteContainerPlain, { justifyContent: quotePosition }]}>
-            <View style={styles.quoteContentWrapper}>
-              <FontAwesome name="quote-left" size={30} color="#666" style={styles.quoteIcon} />
-              <ThemedText style={styles.quoteText}>{quote.text}</ThemedText>
-              {showAuthor && <ThemedText style={styles.authorText}>- {quote.author}</ThemedText>}
-            </View>
-          </View>
-        )}
-      </ViewShot>
+          )}
+        </ViewShot>
+
+        {/* Arrow Navigation */}
+        <View style={styles.arrowNavigationContainer}>
+            <TouchableOpacity style={styles.arrowButton} onPress={() => { goBack(); registerInteraction(); }} disabled={currentIndex <= 0}>
+                <FontAwesome name="chevron-left" size={20} color={currentIndex <= 0 ? '#aaa' : '#3b82f6'} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.arrowButton} onPress={() => { handleNext(); registerInteraction(); }}>
+                <FontAwesome name="chevron-right" size={20} color="#3b82f6" />
+            </TouchableOpacity>
+        </View>
 
       {/* Alignment Controls */}
       <View style={styles.alignmentContainer}>
@@ -260,30 +275,26 @@ export default function HomeScreen() {
           <FontAwesome name={isFavorite(quote) ? "heart" : "heart-o"} size={24} color={isFavorite(quote) ? "#ff4444" : "#fff"} />
         </TouchableOpacity>
       </View>
-
-      {/* Navigation (Bottom row) */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.actionButton, currentIndex <= 0 && { opacity: 0.5 }]}
-          onPress={goBack}
-          disabled={currentIndex <= 0}
-        >
-          <ThemedText style={styles.actionButtonText}>Prev</ThemedText>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.actionButton} onPress={() => getRandomQuote()}>
-          <ThemedText style={styles.actionButtonText}>Next</ThemedText>
-        </TouchableOpacity>
-      </View>
+      </ScrollView>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     padding: 24,
+  },
+  arrowNavigationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 40,
+    marginBottom: 20,
+    marginTop: -10,
+  },
+  arrowButton: {
+    padding: 10,
   },
   viewShotContainer: {
     backgroundColor: 'transparent',

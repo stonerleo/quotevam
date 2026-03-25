@@ -5,6 +5,8 @@ import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawe
 import { Drawer } from 'expo-router/drawer';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
 function CustomDrawerContent(props: any) {
   const { language, setLanguage } = useLanguage();
@@ -94,43 +96,57 @@ function CustomDrawerContent(props: any) {
 
 export default function DrawerLayout() {
   const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
 
   return (
-    <Drawer
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
-      screenOptions={{
-        headerStyle: { backgroundColor: Colors[colorScheme ?? 'light'].background },
-        headerTintColor: Colors[colorScheme ?? 'light'].text,
-        drawerActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-      }}>
-      <Drawer.Screen
-        name="index"
-        options={{
-          drawerLabel: 'Home',
-          title: 'Quotes',
-        }}
-      />
-      <Drawer.Screen
-        name="favorites"
-        options={{
-          drawerLabel: 'Favorites',
-          title: 'My Favorites',
-        }}
-      />
-      <Drawer.Screen
-        name="create"
-        options={{
-          drawerLabel: 'Create Quote',
-          title: 'Create Your Own Quote',
-        }}
-      />
-      <Drawer.Screen
-        name="myquotes"
-        options={{
-          drawerLabel: 'My Quotes',
-          title: 'My Custom Quotes',
-        }}
-      />
-    </Drawer>
+    <View style={{ flex: 1, backgroundColor: Colors[colorScheme ?? 'light'].background }}>
+      <View style={{ flex: 1 }}>
+        <Drawer
+          drawerContent={(props) => <CustomDrawerContent {...props} />}
+          screenOptions={{
+            headerStyle: { backgroundColor: Colors[colorScheme ?? 'light'].background },
+            headerTintColor: Colors[colorScheme ?? 'light'].text,
+            drawerActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+          }}>
+          <Drawer.Screen
+            name="index"
+            options={{
+              drawerLabel: 'Home',
+              title: 'Quotes',
+            }}
+          />
+          <Drawer.Screen
+            name="favorites"
+            options={{
+              drawerLabel: 'Favorites',
+              title: 'My Favorites',
+            }}
+          />
+          <Drawer.Screen
+            name="create"
+            options={{
+              drawerLabel: 'Create Quote',
+              title: 'Create Your Own Quote',
+            }}
+          />
+          <Drawer.Screen
+            name="myquotes"
+            options={{
+              drawerLabel: 'My Quotes',
+              title: 'My Custom Quotes',
+            }}
+          />
+        </Drawer>
+      </View>
+      <View style={{ alignItems: 'center', backgroundColor: Colors[colorScheme ?? 'light'].background, paddingBottom: Math.max(insets.bottom, 0) }}>
+        <BannerAd
+          unitId={__DEV__ ? TestIds.BANNER : "ca-app-pub-3489593844596905/3132323819"}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
+      </View>
+    </View>
   );
 }

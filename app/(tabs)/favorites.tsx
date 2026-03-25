@@ -5,6 +5,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import * as ImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
+import { useAdManager } from '@/context/AdContext';
 import { useRef, useState } from 'react';
 import { Image, ImageBackground, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -21,6 +22,7 @@ type QuotePosition = 'flex-start' | 'center' | 'flex-end';
 export default function FavoritesScreen() {
     const insets = useSafeAreaInsets();
     const { favorites, isFavorite, addFavorite, removeFavorite } = useFavorites();
+    const { registerInteraction } = useAdManager();
     const [currentIndex, setCurrentIndex] = useState(0);
 
     // Background Image State
@@ -136,8 +138,8 @@ export default function FavoritesScreen() {
 
             <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9 }} style={styles.viewShotContainer}>
                 {bgImage ? (
-                    <ImageBackground source={bgImage} style={[styles.quoteBgImage, { justifyContent: quotePosition }]} imageStyle={styles.quoteBgImageInner}>
-                        <View style={[styles.quoteContainer, styles.quoteContainerTransparent]}>
+                    <ImageBackground source={bgImage} style={styles.quoteBgImage} imageStyle={styles.quoteBgImageInner}>
+                        <View style={[styles.quoteContainer, styles.quoteContainerTransparent, { justifyContent: quotePosition }]}>
                             <FontAwesome name="quote-left" size={30} color="#fff" style={styles.quoteIconLight} />
                             <ThemedText style={[styles.quoteText, { color: '#fff' }]}>{quote?.text}</ThemedText>
                             {showAuthor && <ThemedText style={[styles.authorText, { color: '#fff' }]}>- {quote?.author}</ThemedText>}
@@ -153,6 +155,21 @@ export default function FavoritesScreen() {
                     </View>
                 )}
             </ViewShot>
+
+            {/* Arrow Navigation */}
+            <View style={styles.arrowNavigationContainer}>
+                <TouchableOpacity style={styles.arrowButton} onPress={() => { goBack(); registerInteraction(); }} disabled={currentIndex <= 0}>
+                    <FontAwesome name="chevron-left" size={20} color={currentIndex <= 0 ? '#aaa' : '#3b82f6'} />
+                </TouchableOpacity>
+
+                <View style={styles.countIndicator}>
+                    <ThemedText style={{ fontWeight: 'bold', fontSize: 14, opacity: 0.8 }}>{currentIndex + 1} / {favorites.length}</ThemedText>
+                </View>
+
+                <TouchableOpacity style={styles.arrowButton} onPress={() => { goNext(); registerInteraction(); }} disabled={currentIndex >= favorites.length - 1}>
+                    <FontAwesome name="chevron-right" size={20} color={currentIndex >= favorites.length - 1 ? '#aaa' : '#3b82f6'} />
+                </TouchableOpacity>
+            </View>
 
             {/* Alignment Controls */}
             <View style={styles.alignmentContainer}>
@@ -224,29 +241,6 @@ export default function FavoritesScreen() {
                     <FontAwesome name={isFavorite(quote) ? "heart" : "heart-o"} size={24} color={isFavorite(quote) ? "#ff4444" : "#fff"} />
                 </TouchableOpacity>
             </View>
-
-            {/* Navigation (Bottom row) */}
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                    style={[styles.actionButton, currentIndex <= 0 && { opacity: 0.5 }]}
-                    onPress={goBack}
-                    disabled={currentIndex <= 0}
-                >
-                    <ThemedText style={styles.actionButtonText}>Prev</ThemedText>
-                </TouchableOpacity>
-
-                <View style={styles.countIndicator}>
-                    <ThemedText style={{ fontWeight: 'bold', fontSize: 16 }}>{currentIndex + 1} / {favorites.length}</ThemedText>
-                </View>
-
-                <TouchableOpacity
-                    style={[styles.actionButton, currentIndex >= favorites.length - 1 && { opacity: 0.5 }]}
-                    onPress={goNext}
-                    disabled={currentIndex >= favorites.length - 1}
-                >
-                    <ThemedText style={styles.actionButtonText}>Next</ThemedText>
-                </TouchableOpacity>
-            </View>
         </ThemedView>
     );
 }
@@ -256,6 +250,16 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         padding: 24,
+    },
+    arrowNavigationContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 40,
+        marginBottom: 20,
+        marginTop: -10,
+    },
+    arrowButton: {
+        padding: 10,
     },
     emptyContainer: {
         flex: 1,
@@ -275,6 +279,7 @@ const styles = StyleSheet.create({
     },
     quoteBgImage: {
         width: '100%',
+        aspectRatio: 4 / 5,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -303,7 +308,8 @@ const styles = StyleSheet.create({
     },
     quoteContainerTransparent: {
         backgroundColor: 'rgba(0, 0, 0, 0.4)', // Dark overlay for text readability
-        marginVertical: 20,
+        height: '100%',
+        justifyContent: 'center',
     },
     quoteIcon: {
         alignSelf: 'flex-start',

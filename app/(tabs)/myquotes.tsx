@@ -8,9 +8,11 @@ import { useRef, useState } from 'react';
 import { ImageBackground, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ViewShot from 'react-native-view-shot';
+import { useAdManager } from '@/context/AdContext';
 
 export default function MyQuotesScreen() {
     const { customQuotes, removeCustomQuote } = useCustomQuotes();
+    const { registerInteraction } = useAdManager();
     const insets = useSafeAreaInsets();
     const [currentIndex, setCurrentIndex] = useState(0);
     const viewShotRef = useRef<any>(null);
@@ -106,8 +108,8 @@ export default function MyQuotesScreen() {
 
             <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9 }} style={styles.viewShotContainer}>
                 {bgImage ? (
-                    <ImageBackground source={bgImage} style={[styles.quoteBgImage, { justifyContent: quotePosition }]} imageStyle={styles.quoteBgImageInner}>
-                        <View style={[styles.quoteContainer, styles.quoteContainerTransparent]}>
+                    <ImageBackground source={bgImage} style={styles.quoteBgImage} imageStyle={styles.quoteBgImageInner}>
+                        <View style={[styles.quoteContainer, styles.quoteContainerTransparent, { justifyContent: quotePosition }]}>
                             <FontAwesome name="quote-left" size={30} color={textColor} style={{ alignSelf: 'flex-start', marginBottom: 10, opacity: 0.8 }} />
                             <ThemedText style={[styles.quoteText, { color: textColor, fontSize: textSize }, renderFontStyle(fontFamily)]}>{text}</ThemedText>
                             {author ? <ThemedText style={[styles.authorText, { color: textColor }]}>- {author}</ThemedText> : null}
@@ -124,6 +126,21 @@ export default function MyQuotesScreen() {
                 )}
             </ViewShot>
 
+            {/* Arrow Navigation */}
+            <View style={styles.arrowNavigationContainer}>
+                <TouchableOpacity style={styles.arrowButton} onPress={() => { goBack(); registerInteraction(); }} disabled={currentIndex <= 0}>
+                    <FontAwesome name="chevron-left" size={20} color={currentIndex <= 0 ? '#aaa' : '#3b82f6'} />
+                </TouchableOpacity>
+
+                <View style={styles.countIndicator}>
+                    <ThemedText style={{ fontWeight: 'bold', fontSize: 14, opacity: 0.8 }}>{currentIndex + 1} / {customQuotes.length}</ThemedText>
+                </View>
+
+                <TouchableOpacity style={styles.arrowButton} onPress={() => { goNext(); registerInteraction(); }} disabled={currentIndex >= customQuotes.length - 1}>
+                    <FontAwesome name="chevron-right" size={20} color={currentIndex >= customQuotes.length - 1 ? '#aaa' : '#3b82f6'} />
+                </TouchableOpacity>
+            </View>
+
             <View style={[styles.buttonContainer, { marginBottom: 12 }]}>
                 <TouchableOpacity style={styles.iconButton} onPress={copyToClipboard}>
                     <FontAwesome name="copy" size={24} color="#fff" />
@@ -137,26 +154,14 @@ export default function MyQuotesScreen() {
                     <FontAwesome name="trash" size={24} color="#fff" />
                 </TouchableOpacity>
             </View>
-
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={[styles.actionButton, currentIndex <= 0 && { opacity: 0.5 }]} onPress={goBack} disabled={currentIndex <= 0}>
-                    <ThemedText style={styles.actionButtonText}>Prev</ThemedText>
-                </TouchableOpacity>
-
-                <View style={styles.countIndicator}>
-                    <ThemedText style={{ fontWeight: 'bold', fontSize: 16 }}>{currentIndex + 1} / {customQuotes.length}</ThemedText>
-                </View>
-
-                <TouchableOpacity style={[styles.actionButton, currentIndex >= customQuotes.length - 1 && { opacity: 0.5 }]} onPress={goNext} disabled={currentIndex >= customQuotes.length - 1}>
-                    <ThemedText style={styles.actionButtonText}>Next</ThemedText>
-                </TouchableOpacity>
-            </View>
         </ThemedView>
     );
 }
 
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 24, paddingTop: 40, justifyContent: 'center' },
+    arrowNavigationContainer: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 40, marginBottom: 20, marginTop: -10 },
+    arrowButton: { padding: 10 },
     emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 40 },
     viewShotContainer: { backgroundColor: 'transparent', marginBottom: 20, borderRadius: 20 },
     quoteBgImage: { width: '100%', aspectRatio: 4 / 5, justifyContent: 'center', alignItems: 'center' },
